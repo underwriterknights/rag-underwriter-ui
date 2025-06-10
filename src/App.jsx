@@ -37,7 +37,7 @@ const flow = {
     
     <div >
       <div className='divTitle'>
-        <img src="/src//assets//Logo.jpg" className='logo'></img>
+        <img src="/src//assets//Logo.png" className='logo'></img>
         <h3 className='titleName'>Underwriter Knights</h3>
       </div>     
       <div className="divheader" >
