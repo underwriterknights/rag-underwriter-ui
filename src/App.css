@@ -12,6 +12,8 @@
   display: flex;
   flex-direction: row;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  border-bottom: 2px solid rgb(242, 104, 5);
+  left:0;
 }
 
 .titleName{
@@ -38,3 +40,6 @@ color: white;
 text-align: center;
   
 }
+
+
+
