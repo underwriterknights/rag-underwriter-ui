@@ -1,6 +1,6 @@
 import React from "react";
 import ChatBot from "react-chatbotify";
-const Home = () => {
+const Home = (props) => {
     const flow = {
     start: {
       message: "Who are you?",

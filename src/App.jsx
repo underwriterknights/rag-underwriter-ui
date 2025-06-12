@@ -10,8 +10,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   const [count, setCount] = useState(0)
-  let isLoggedIn = false;
-
+  const [loggedUser, setLoggedUser] = useState(null);
+  
   return (
     <>
     
@@ -22,7 +22,7 @@ function App() {
                         path="/"
                         
                         element={
-                       <Welcome/>
+                       <Welcome loggedUser={loggedUser}/>
                         }
                     />
                     <Route
@@ -31,11 +31,11 @@ function App() {
                     />
                      <Route
                         path="/login"
-                        element={<Login />}
+                        element={<Login setLoggedUser={setLoggedUser} />}
                     />
                       <Route
                         path="/Home"
-                        element={ <ProtectedRoute isLoggedIn={isLoggedIn}>
+                        element={ <ProtectedRoute loggedUser={loggedUser}>
                             <Home /> 
                         </ProtectedRoute>}
                     />

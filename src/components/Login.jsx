@@ -3,7 +3,7 @@ import '../Login.css'; // Assuming you have a CSS file for styling
 import Header from "./Header";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = (props) => {
 
     const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ const Login = () => {
         const password = event.target.password.value;
         console.log("Username:", username);
         console.log("Password:", password);
-
+         props.setIsLoggedIn(true); // Set the login state to true
         // Redirect to home page after login
         navigate("/Home");
     }
