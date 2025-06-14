@@ -15,7 +15,7 @@ function App() {
   return (
     <>
     
-    <Header></Header>
+    <Header loggedUser={loggedUser}></Header>
      <BrowserRouter>
                 <Routes>
                     <Route

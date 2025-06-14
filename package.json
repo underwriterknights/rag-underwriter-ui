@@ -12,6 +12,7 @@
   "dependencies": {
     "@parcel/watcher": "^2.5.1",
     "aws-amplify": "^6.15.0",
+    "axios": "^1.10.0",
     "react": "^19.1.0",
     "react-chatbot-kit": "^2.2.2",
     "react-chatbotify": "^2.0.0-beta.38",

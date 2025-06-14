@@ -2,6 +2,7 @@ import React from "react";
 import '../Login.css'; // Assuming you have a CSS file for styling
 import Header from "./Header";
 import { useNavigate } from "react-router-dom";
+import {UserLoginApi} from '../service/api'; // Adjust the import path as necessary
 
 const Login = (props) => {
 
@@ -13,11 +14,25 @@ const Login = (props) => {
         // For now, we'll just log the input values to the console
         const username = event.target.username.value;
         const password = event.target.password.value;
-        console.log("Username:", username);
-        console.log("Password:", password);
-         props.setIsLoggedIn(true); // Set the login state to true
-        // Redirect to home page after login
-        navigate("/Home");
+        
+        const userDetail={
+            username: username,
+            password: password  
+        }
+          UserLoginApi(userDetail).then((response) => {                    
+                     if(response.full_name) {
+                           props.setLoggedUser(response); // Set the logged user in the parent component
+                           navigate("/Home");
+                        }else{
+                          alert("Login failed. Please check your credentials.");
+                          return;
+                        }
+                   
+                }).catch((error) => {
+                    alert("Login failed. Please try again.");
+                    console.error("Login error:", error);
+                });
+        
     }
   return (
     <div className="login-container">
