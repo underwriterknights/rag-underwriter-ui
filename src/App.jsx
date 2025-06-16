@@ -34,10 +34,14 @@ function App() {
                         element={<Login setLoggedUser={setLoggedUser} />}
                     />
                       <Route
-                        path="/Home"
-                        element={ <ProtectedRoute loggedUser={loggedUser}>
-                            <Home /> 
-                        </ProtectedRoute>}
+                        path="/home"
+                        // element={ <ProtectedRoute loggedUser={loggedUser}>
+                        //     <Home loggedUser={loggedUser}/> 
+                        // </ProtectedRoute>}
+
+                        element={
+                          <Home loggedUser={loggedUser}/> 
+                        }
                     />
                 </Routes>
             </BrowserRouter>     

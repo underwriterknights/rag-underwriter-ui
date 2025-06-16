@@ -22,7 +22,7 @@ const Login = (props) => {
           UserLoginApi(userDetail).then((response) => {                    
                      if(response.full_name) {
                            props.setLoggedUser(response); // Set the logged user in the parent component
-                           navigate("/Home");
+                           navigate("/home");
                         }else{
                           alert("Login failed. Please check your credentials.");
                           return;

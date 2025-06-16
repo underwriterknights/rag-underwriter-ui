@@ -1,0 +1,169 @@
+.chat-wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.toggle-button {
+  padding: 10px 20px;
+  background-color: #f18502f9;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.chat-container {
+  width: 300px;
+  height: 400px;
+  background: white;
+  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.chat-header {
+  background-color: #ff6a00;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 10px;
+  font-size: 13px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+.chat-bubble {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 10px;
+  max-width: 90%;
+}
+
+.chat-bubble.user {
+  background-color: #41534b55;
+  align-self: flex-end;
+}
+
+.chat-bubble.bot {
+  background-color: #ececec;
+  align-self: flex-start;
+}
+
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  font-size: 14px;
+}
+
+.chat-input button {
+  background-color: #ff6a00;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.divChatButtons{
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-content: flex-start;
+  margin-top: 10px;
+}
+
+.buttonChatOptions {
+    background-color: rgba(201, 219, 219, 0.709);
+ min-height: 20px;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 5px;
+  text-align: left;
+  color: black;
+  max-width: 90%;
+}
+
+.buttonChatOptions:hover {
+  background-color: rgba(193, 213, 213, 0.95);
+}
+
+.buttonChatOptionsUnderwriting {
+   background-color: rgba(8, 149, 237, 0.709);
+ min-height: 20px;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 5px;
+  text-align: left;
+  color: black;
+  max-width: 90%;
+}
+
+.closeButton {
+  background-color: #ebe0d9;
+  color: rgb(72, 73, 77);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: large;
+}
+
+.minimizeButton {
+  background-color: #ebe0d9;
+  color: rgb(72, 73, 77);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 45px;
+  font-size: large;
+}
+
+.spanMessage {
+  white-space: pre-line
+}
+
+.attachIcon {
+  width: 40px;
+  height: 40px;
+  vertical-align: bottom;
+  color: white;
+  background-color: #f0edea;
+  cursor: pointer;
+}
+
+
+.divBackground {
+ background: url("/src/assets/Underwriter2.jpg") no-repeat center center fixed;
+    height: 80vh;
+    width: 100%;
+  background-size: cover;  
+  position: absolute;
+    
+}
+
+
