@@ -5,6 +5,7 @@ import AWS from "aws-sdk";
 
 export const UploadComponent = (props) => {
   const [file, setFile] = useState(null);
+  const [awsFilePath, setAwsFilePath] = useState("");
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -21,8 +22,8 @@ export const UploadComponent = (props) => {
 
     // S3 Credentials
     AWS.config.update({
-      accessKeyId: "xxxxxxxxxxxxxxxxxxxxxxx",
-      secretAccessKey: "xxxxxxxxxxxxxxxxxxxxxxxxx",
+          accessKeyId: "xxxxxxxx",
+      secretAccessKey: "xxxxxxxx",
     });
     const s3 = new AWS.S3({
       params: { Bucket: S3_BUCKET },
@@ -37,6 +38,8 @@ export const UploadComponent = (props) => {
       Body: file,
     };
 
+    
+
     // Uploading file to s3
 
     var uploadFile = s3
@@ -50,6 +53,9 @@ export const UploadComponent = (props) => {
       .promise();
 
     await uploadFile.then((err, data) => {
+      setAwsFilePath(
+        `https://s3.${REGION}.amazonaws.com/${S3_BUCKET}/${file.name}`
+      );
       console.log(err);
       // Fille successfully uploaded
       alert("File uploaded successfully.");
@@ -60,6 +66,8 @@ export const UploadComponent = (props) => {
     <div className="upload-component">
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
-    </div>
+      {awsFilePath && <p>File uploaded to: <a href={awsFilePath} target="_blank" rel="noopener noreferrer">{awsFilePath}</a></p>}
+      {file && <p>Selected file: {file.name}</p>}
+      </div>
   );
 }
