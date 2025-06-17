@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";   
 import "../styles/Upload.css";
-
+import AWS from "aws-sdk";
 
 export const UploadComponent = (props) => {
   const [file, setFile] = useState(null);
@@ -10,12 +10,50 @@ export const UploadComponent = (props) => {
     setFile(event.target.files[0]);
   };
 
-  const handleUpload = () => {
-    if (file) {
-      props.onFileUpload(file);
-    } else {
-      alert("Please select a file to upload.");
-    }
+
+  // Function to upload file to s3
+  const handleUpload = async () => {
+    // S3 Bucket Name
+    const S3_BUCKET = "underwriterknightsbucket";
+
+    // S3 Region
+    const REGION = "us-east-1";
+
+    // S3 Credentials
+    AWS.config.update({
+      accessKeyId: "xxxxxxxxxxxxxxxxxxxxxxx",
+      secretAccessKey: "xxxxxxxxxxxxxxxxxxxxxxxxx",
+    });
+    const s3 = new AWS.S3({
+      params: { Bucket: S3_BUCKET },
+      region: REGION,
+    });
+
+    // Files Parameters
+
+    const paramsObject = {
+      Bucket: S3_BUCKET,
+      Key: file.name,
+      Body: file,
+    };
+
+    // Uploading file to s3
+
+    var uploadFile = s3
+      .putObject(paramsObject)
+      .on("httpUploadProgress", (evt) => {
+        // File uploading progress
+        console.log(
+          "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
+        );
+      })
+      .promise();
+
+    await uploadFile.then((err, data) => {
+      console.log(err);
+      // Fille successfully uploaded
+      alert("File uploaded successfully.");
+    });
   };
 
   return (
