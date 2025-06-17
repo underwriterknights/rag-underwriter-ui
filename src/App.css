@@ -41,5 +41,11 @@ text-align: center;
   
 }
 
+.spanUserName {
+  color: rgb(242, 104, 5);
+  font-weight: bold;
+  margin-left: 10px;
+}
+
 
 

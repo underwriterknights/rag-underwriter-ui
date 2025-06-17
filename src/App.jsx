@@ -6,20 +6,24 @@ import Register from './components/Register'
 import Header from './components/Header'
 import Login from './components/Login'
 import Home from './components/Home'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   const [count, setCount] = useState(0)
-
-
+  const [loggedUser, setLoggedUser] = useState(null);
+  
   return (
     <>
     
-    <Header></Header>
+    <Header loggedUser={loggedUser}></Header>
      <BrowserRouter>
                 <Routes>
                     <Route
                         path="/"
-                        element={<Welcome />}
+                        
+                        element={
+                       <Welcome loggedUser={loggedUser}/>
+                        }
                     />
                     <Route
                         path="/register"
@@ -27,11 +31,17 @@ function App() {
                     />
                      <Route
                         path="/login"
-                        element={<Login />}
+                        element={<Login setLoggedUser={setLoggedUser} />}
                     />
                       <Route
-                        path="/Home"
-                        element={<Home />}
+                        path="/home"
+                        // element={ <ProtectedRoute loggedUser={loggedUser}>
+                        //     <Home loggedUser={loggedUser}/> 
+                        // </ProtectedRoute>}
+
+                        element={
+                          <Home loggedUser={loggedUser}/> 
+                        }
                     />
                 </Routes>
             </BrowserRouter>     
