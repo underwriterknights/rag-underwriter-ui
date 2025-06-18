@@ -59,7 +59,7 @@ const UnderwriterGrid = () => {
         
       <AIDecisionSummaryModal isOpen={isOpen} closeModal={closeModal} />
       <div className="divFooter">
-        <p>© 2023 Underwriter Knights. All rights reserved.</p>
+        <p>© 2025 Underwriter Knights. All rights reserved.</p>
 
         </div>
     </div>

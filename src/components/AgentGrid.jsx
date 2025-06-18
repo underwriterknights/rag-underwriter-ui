@@ -48,7 +48,7 @@ const AgentGrid = () => {
           {data.map((user) => (
             <tr key={user.id}>
               <td>{user.driverName}</td>
-              <td>{user.licenceNumber}</td>
+              <td><Link onClick={openModal}>{user.licenceNumber}</Link></td>
               <td>{user.state}</td>
               <td>{user.vechicleModel}</td>
               <td>{user.vehicleMake}</td>

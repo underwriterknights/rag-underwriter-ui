@@ -43,7 +43,7 @@ function App() {
             </BrowserRouter>     
 
   <div  className='divFooter'>
-        <h1></h1>
+        <p className="copywrite">© 2025 Underwriter Knights. All rights reserved.</p>
       </div>
     </>
   )
