@@ -1,0 +1,118 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: rgba(228, 228, 228, 0.967);
+  border-radius: 4px;
+  max-width: 70%;
+  max-height: 85vh;
+  min-height: 85vh;
+  overflow-y: auto;
+  padding-bottom: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.submitButtonContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.buttons {
+  background-color: rgb(242, 104, 5);
+  color: white;
+  border: none;
+  padding: 5px 20px;
+  border-radius: 5px;
+  max-height: 30px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.buttons:hover {
+  background-color: rgb(242, 127, 5);
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  max-width: 400px;
+}
+
+.form-group label {
+  width: 200px;
+  font-size: small;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  margin-right: 10px;
+}
+
+.form-group input,
+.form-group select {
+  flex: 1;
+  padding: 5px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: left;
+  float: left;
+}
+
+.checkbox-group label {
+  margin-left: 8px;
+  font-weight: normal;
+}
+
+.driverForm {
+  display: flex;
+  flex-direction: row;  
+ 
+}
+
+.uploadDriver {
+  padding-top: 20%;
+ 
+}
+
+.vechicleForm {
+  display: flex;
+  flex-direction: row;  
+
+}
+
+.uploadVechicle {
+  padding-top: 20%;
+}
+
+.locationForm {
+  display: flex;
+  flex-direction: row;  
+  
+}
+
+.uploadLocation {
+  padding-top: 20%;
+}
+
+.coverageForm {
+  display: flex;
+  flex-direction: row;  
+  min-width: 80;
+  
+}
+
+.uploadCoverage {
+  padding-top: 20%;
+}

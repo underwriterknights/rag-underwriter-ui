@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './App.css'
+import './styles/App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Welcome from './components/Welcome'
 import Register from './components/Register'
@@ -35,13 +35,9 @@ function App() {
                     />
                       <Route
                         path="/home"
-                        // element={ <ProtectedRoute loggedUser={loggedUser}>
-                        //     <Home loggedUser={loggedUser}/> 
-                        // </ProtectedRoute>}
-
-                        element={
-                          <Home loggedUser={loggedUser}/> 
-                        }
+                        element={ <ProtectedRoute loggedUser={loggedUser}>
+                            <Home loggedUser={loggedUser}/> 
+                        </ProtectedRoute>}
                     />
                 </Routes>
             </BrowserRouter>     

@@ -1,0 +1,40 @@
+.uwStatus {
+  background-color: rgb(6, 198, 232);
+    color: white;
+    font-weight: bold;
+}
+
+.buttonApprove {
+  background-color: rgba(13, 202, 13, 0.895);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 80px;
+}
+
+.buttonApprove:hover {
+  background-color: rgb(11, 140, 84);
+}
+
+.buttonReject {
+  background-color: rgb(240, 6, 6);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 2px;
+  width: 80px;
+}
+
+.buttonReject:hover {
+  background-color: rgb(221, 111, 111);
+}
+
+.divAction {
+  display: flex;
+  flex-direction: column;
+  
+}

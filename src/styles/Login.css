@@ -1,0 +1,14 @@
+.buttonRegister, .buttonLogin {
+  background-color: rgb(242, 104, 5);
+  color: white;
+  border: none;
+  padding: 5px 20px;
+  border-radius: 5px;
+  max-height: 30px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.buttonRegister:hover, .buttonLogin:hover {
+  background-color: rgb(242, 127, 5);
+}

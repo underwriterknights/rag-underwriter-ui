@@ -1,5 +1,5 @@
 import React from "react";
-import '../Login.css'; // Assuming you have a CSS file for styling
+import '../styles/Login.css'; // Assuming you have a CSS file for styling
 import Header from "./Header";
 import { useNavigate } from "react-router-dom";
 import {UserLoginApi} from '../service/api'; // Adjust the import path as necessary
@@ -24,7 +24,7 @@ const Login = (props) => {
                            props.setLoggedUser(response); // Set the logged user in the parent component
                            navigate("/home");
                         }else{
-                          alert("Login failed. Please check your credentials.");
+                          alert("Login Failed - " + response.message);
                           return;
                         }
                    

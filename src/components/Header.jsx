@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { useLocation  } from "react-router-dom";
-const Header= (props) => {
+import React from "react";
+
+const Header= () => {
   return (
     <div className='divTitle'>
         <img src="/src//assets//Logo.png" className='logo'></img>

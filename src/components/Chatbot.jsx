@@ -1,5 +1,5 @@
 import React, { use, useState,useEffect } from 'react';
-import '../ChatBot.css'; // Assuming you have a CSS file for styling
+import '../styles/ChatBot.css'; // Assuming you have a CSS file for styling
 
 const ChatBot = () => {
   const [isVisible, setIsVisible] = useState(false);
