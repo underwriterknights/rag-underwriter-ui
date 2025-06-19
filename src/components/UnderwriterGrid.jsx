@@ -1,67 +1,108 @@
-import React,{useState} from "react";
+import React,{useState,useEffect } from "react";
 import "../styles/UnderwriterGrid.css"; // We'll define CSS separately
 import { Link } from "react-router-dom";
 import AgentNewFormModal from "./AgentNewFormModal"; // Import the modal component
 import AIDecisionSummaryModal from "./AIDecisionSummary";
+import {GetAgentData, UpdateAgentData} from "../service/api"
 
-const UnderwriterGrid = () => {
+const UnderwriterGrid = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-  const data = [
-    { id: 1, driverName: "Alice", licenceNumber: "xxxxxxx", state: "Connecticut",vechicleModel: "Toyota Camry", vehicleMake: "Toyota", vehicleMakeYear: 2020, status: "Submitted - Pending Review" },
-    // Sample data, replace xxxxxxx with actual licence numbers
-    { id: 2, driverName: "Bob", licenceNumber: "xxxxxxx", state: "New York", vechicleModel: "Honda Accord", vehicleMake: "Honda", vehicleMakeYear: 2019, status: "Submitted - Pending Review" },
-    { id: 3, driverName: "Charlie", licenceNumber: "xxxxxxx", state: "New York", vechicleModel: "Ford Focus", vehicleMake: "Ford", vehicleMakeYear: 2021,   status: "Review Completed" }
+  const openModal=() =>{setIsOpen(true)}
+  const closeModal=()=>{setIsOpen(false)}
+  const [agentData, setAgentData] = useState([]);
+    const [modalData, setModalData] = useState(
+      {
+        isOpen:false,
+        data:null,
+        isViewOnly:false  
+      }
+    )
+    useEffect(()=>{
+       fetchData();
+      },[])
+    
+      const fetchData = ()=>{
+        GetAgentData().then((response)=>{
+        if(response && response.length > 0)
+        {
+          setAgentData(response.filter(res=>res.status=="Submitted"));
+        }else{
+          alert(response.message)
+        }
+       })
+      } 
 
-  ];
+  const handleModalOpen = (event, data, isViewOnly) =>{
+    setModalData({
+      isOpen:true,
+      data: data,
+      isViewOnly: isViewOnly
+    })
+  }
 
   const handleSummary = (event) => {
     event.preventDefault(); 
     openModal();
     }
+  const handleRefreshData = ()=>{
+     fetchData();
+  }
+
+  const handleActions = (event, data)=>{
+    let updatedData = {
+      licenseNumber: data.licenseNumber,
+      status: event.target.id=="btnApprove"?"Approve":"Reject"
+    }
+    UpdateAgentData(updatedData).then((response)=>{
+      if(response && response[0]!="Update is completed")
+        alert(response[0])
+      else
+      fetchData();
+    })
+  }
 
   return (
     <div style={{ padding: 0,  top:60, left:10, right:0,  marginBottom:"50px", position:"absolute", width:"95%", height:"100%" }}>
       <div className="agentGridContainer">
-           
+           <div className="buttonContainer">          
+                     <button className="btnRefresh" onClick={handleRefreshData}>Refresh Data</button>
+          </div> 
       </div>
          
-      <table border="1" cellPadding="10" cellSpacing="0" className="agentGridTable">
+      {agentData.length?<table border="1" cellPadding="10" cellSpacing="0" className="agentGridTable">
     
         <thead>
           <tr>
             <th>Driver Name</th>
-            <th>Licence Number</th>
+            <th>License Number</th>
             <th>State</th>
-            <th>Vehicle Model</th>
             <th>Vehicle Make</th>
+            <th>Vehicle Model</th>
+            
             <th>Vehicle Make Year</th>
             <th>Recommendation</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((user) => (
-            <tr key={user.id}>
-              <td>{user.driverName}</td>
-              <td>{user.licenceNumber}</td>
-              <td>{user.state}</td>
-              <td>{user.vechicleModel}</td>
-              <td>{user.vehicleMake}</td>
-              <td>{user.vehicleMakeYear}</td>
+          {agentData.map((data) => (
+            <tr key={data.licenseNumber}>
+              <td>{data.fullName}</td>
+              <td><Link className="viewDataLink" onClick={(event)=>{handleModalOpen(event,data,true)}}>{data.licenseNumber}</Link></td>
+              <td>{data.state}</td>
+              <td>{data.make}</td>
+              <td>{data.model}</td>
+              <td>{data.year}</td>
                 <td><Link onClick={handleSummary}>*AI Decision Summary</Link></td>
-                <td className="divAction"><div><button className="buttonApprove">Approve</button><button className="buttonReject">Reject</button></div></td>
+                <td className="divAction"><div><button id="btnApprove" className="buttonApprove" onClick={(e)=>{handleActions(e, data)}}>Approve</button>
+                <button id="btnReject" className="buttonReject" onClick={(e)=>{handleActions(e, data)}}>Reject</button></div></td>
             </tr>
           ))}
         </tbody>
-      </table>
-        
+      </table>: <div className="divNoData"><h4 className="noData">No Pending Reviews</h4></div>}
+      <AgentNewFormModal modalData={modalData} setModalData={setModalData} fetchData ={fetchData}/>
       <AIDecisionSummaryModal isOpen={isOpen} closeModal={closeModal} />
-      <div className="divFooter">
-        <p>© 2025 Underwriter Knights. All rights reserved.</p>
-
-        </div>
+     
     </div>
   );
 };

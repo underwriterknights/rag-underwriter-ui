@@ -38,3 +38,27 @@
   flex-direction: column;
   
 }
+
+.viewDataLink {
+   color:rgb(3, 131, 210);
+   font-weight: 600;
+   text-decoration: none;
+}
+
+.viewDataLink:hover{
+  text-decoration: underline;
+}
+
+.noData{
+  margin-left: 20px;
+  padding: 5px;
+  color: rgb(219, 94, 5);
+}
+
+.divNoData{
+  width: 100%;  
+  padding: 0px;
+  min-height: 25px; 
+
+  background-color: rgb(203, 206, 206);
+}

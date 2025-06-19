@@ -5,9 +5,10 @@ import '../styles/Home.css'; // Assuming you have a CSS file for styling
 import UnderwriterGrid from "./UnderwriterGrid"; // Import the UnderwriterGrid component
 
 const Home = (props) => {
+   let loggedUser = JSON.parse(localStorage.getItem("loggedUser"))
     return (
     <div className='divHome'>
-    {props.loggedUser && props.loggedUser.role=='Underwriter'? <div className='divBackground'>
+    {loggedUser && loggedUser.role=='Underwriter'? <div className='divBackground'>
        <UnderwriterGrid></UnderwriterGrid>
       </div>:<div> <AgentGrid></AgentGrid></div>}
 

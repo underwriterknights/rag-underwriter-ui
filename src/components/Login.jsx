@@ -22,6 +22,7 @@ const Login = (props) => {
           UserLoginApi(userDetail).then((response) => {                    
                      if(response.full_name) {
                            props.setLoggedUser(response); // Set the logged user in the parent component
+                           localStorage.setItem('loggedUser', JSON.stringify(response));
                            navigate("/home");
                         }else{
                           alert("Login Failed - " + response.message);

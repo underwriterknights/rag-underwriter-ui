@@ -28,7 +28,7 @@
   
 }
 
-.buttonSubmitNew { 
+.buttonSubmitNew  { 
   color: rgb(6, 158, 240);
   border: none;
   padding: 5px;
@@ -42,6 +42,32 @@
 .buttonContainer {
   display: flex;
   justify-content: flex-end;
- 
 
+}
+
+.btnRefresh {
+  background-color: rgb(242, 104, 5);
+  color: white;
+  border: none;
+  padding: 5px 20px;
+  border-radius: 5px;
+  max-height: 30px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+
+.btnRefresh:hover {
+    background-color: rgb(242, 127, 5);
+} 
+
+.viewDataLink {
+   color:rgb(3, 131, 210);
+   font-weight: 600;
+   text-decoration: none;
+}
+
+.viewDataLink:hover{
+  text-decoration: underline;
 }

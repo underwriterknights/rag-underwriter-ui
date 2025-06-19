@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/AgentModal.css"; // Optional CSS styling
-
+import {SaveAgentDataApi} from "../service/api"
 const AgentNewFormModal = (props) => {
-
   let initialFormData = {
      fullName: "",
     dateOfBirth: "",
@@ -33,6 +32,7 @@ const AgentNewFormModal = (props) => {
     comprehensiveDeductible: "$500",
     roadsideAssistance: false,
     rentalReimbursement: false,
+    status:"Submitted"
   }
 
   const[driverUpload, setDriverUpload] = useState(false);
@@ -40,20 +40,36 @@ const AgentNewFormModal = (props) => {
   const[locationUpload, setLocationUpload] = useState(false);
   const[coverageUpload, setCoverageUpload] = useState(false);
 
-   const [formData, setFormData] = useState(initialFormData);
+   const [formData, setFormData] = useState(props.modalData && 
+    props.modalData.data?props.modalData.data:initialFormData);
 
   const [submitted, setSubmitted] = useState(false);
 
+  useEffect(()=>{
+    if(props.modalData?.data) 
+     setFormData(props.modalData.data)
+  },[props.modalData?.data])
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let value =e.target.value;
+    if(e.target.name=="roadsideAssistance" || e.target.name=="rentalReimbursement")
+      value = e.target.checked
+
+    setFormData({ ...formData, [e.target.name]:  value});
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitted Data:", formData);
-    setSubmitted(true);
-    document.getElementById("agentForm").reset(); // Reset the form after submission
-    setFormData(initialFormData); // Reset the form data state
+    SaveAgentDataApi(formData).then((reponse)=>{
+      setSubmitted(true);
+      document.getElementById("agentForm").reset(); // Reset the form after submission
+      setFormData(initialFormData); // Reset the form data state
+      props.fetchData();  
+    }).catch((error)=>{
+      alert('Error occured during save data' + error)
+    })
+   
   };
 
   const handleFileUpload = (e) => {
@@ -82,8 +98,11 @@ const AgentNewFormModal = (props) => {
     }
   }
 
-  const handleClose = () => {
-    props.closeModal(); 
+  const handleClose = (event) => {       
+    props.setModalData({
+    isOpen:false,
+    data:null
+    })
     setFormData(initialFormData); // Reset the form data state when closing the modal
     setDriverUpload(false); 
     setVehicleUpload(false);
@@ -94,7 +113,7 @@ const AgentNewFormModal = (props) => {
 
   return (
     <div>   
-      {props.isOpen && (
+      {props.modalData?.isOpen && (
         <div className="modal-overlay">
           <div className="modal">
           
@@ -202,32 +221,32 @@ const AgentNewFormModal = (props) => {
 <h2>Location Information</h2>
   <div className="form-group">
       <label htmlFor="street">Street Address:</label>
-      <input type="text" name="street" id="street" required={!locationUpload}   value={location.street} onChange={handleChange} />
+      <input type="text" name="street" id="street" required={!locationUpload}   value={formData.street} onChange={handleChange} />
     </div>
 
     <div className="form-group">
       <label htmlFor="city">City:</label>
-      <input type="text" name="city" id="city" required={!locationUpload}   value={location.city} onChange={handleChange} />
+      <input type="text" name="city" id="city" required={!locationUpload}   value={formData.city} onChange={handleChange} />
     </div>
 
     <div className="form-group">
       <label htmlFor="state">State:</label>
-      <input type="text" name="state" id="state" required={!locationUpload}   value={location.state} onChange={handleChange} />
+      <input type="text" name="state" id="state" required={!locationUpload}   value={formData.state} onChange={handleChange} />
     </div>
 
     <div className="form-group">
       <label htmlFor="zip">ZIP Code:</label>
-      <input type="text" name="zip" id="zip" required={!locationUpload}   value={location.zip} onChange={handleChange} />
+      <input type="text" name="zip" id="zip" required={!locationUpload}   value={formData.zip} onChange={handleChange} />
     </div>
 
     <div className="form-group">
       <label htmlFor="county">County:</label>
-      <input type="text" name="county" id="county" required={!locationUpload}  value={location.county} onChange={handleChange} />
+      <input type="text" name="county" id="county" required={!locationUpload}  value={formData.county} onChange={handleChange} />
     </div>
 
     <div className="form-group">
       <label htmlFor="residenceType">Residence Type:</label>
-      <select name="residenceType" id="residenceType" required={!locationUpload}   value={location.residenceType} onChange={handleChange}>
+      <select name="residenceType" id="residenceType" required={!locationUpload}   value={formData.residenceType} onChange={handleChange}>
        <option value="" disabled selected>Select an option</option>
         <option value="own">Own</option>
         <option value="rent">Rent</option>
@@ -237,7 +256,7 @@ const AgentNewFormModal = (props) => {
 
     <div className="form-group">
       <label htmlFor="garageParking">Garage Parking Available?</label>
-      <select name="garageParking" id="garageParking" required={!locationUpload}   value={location.garageParking} onChange={handleChange}>
+      <select name="garageParking" id="garageParking" required={!locationUpload}   value={formData.garageParking} onChange={handleChange}>
         <option value="" disabled selected>Select an option</option>
         <option value="yes">Yes</option>
         <option value="no">No</option>
@@ -356,7 +375,6 @@ const AgentNewFormModal = (props) => {
         name="roadsideAssistance"
         checked={formData.roadsideAssistance}
         onChange={handleChange}
-          required={!coverageUpload}  
       />
       <label htmlFor="roadsideAssistance">Add Roadside Assistance</label>
     </div>
@@ -368,7 +386,6 @@ const AgentNewFormModal = (props) => {
         name="rentalReimbursement"
         checked={formData.rentalReimbursement}
         onChange={handleChange}
-           required={!coverageUpload}   
       />
       <label htmlFor="rentalReimbursement">Add Rental Reimbursement</label>
     </div>
@@ -377,11 +394,10 @@ const AgentNewFormModal = (props) => {
     <label htmlFor="coverageImage">Upload Coverage Document:</label>
     <input type="file" id="coverageUpload" name="coverageUpload" onChange={handleFileUpload}  />
     </div>
-  </div>
-    
+  </div>    
      <div className="submitButtonContainer"> 
-          <button type="submit" className="buttons">Submit For Review</button>
-          <button onClick={handleClose} className="buttons">Cancel</button>
+          <button type="submit" name="submitButton" id="submitButton" hidden={props.modalData?.isViewOnly} className="buttons">Submit For Review</button>
+          <button type="button" id="cancelButton" onClick={handleClose} className="buttons">Close</button>
         </div>
         
       </form>
