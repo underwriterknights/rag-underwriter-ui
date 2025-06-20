@@ -9,6 +9,8 @@ const UnderwriterGrid = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const openModal=() =>{setIsOpen(true)}
   const closeModal=()=>{setIsOpen(false)}
+  const [showSummary,setShowSummary] = useState(false)
+  const [summaryData, setSummaryData] = useState(null);
   const [agentData, setAgentData] = useState([]);
     const [modalData, setModalData] = useState(
       {
@@ -32,6 +34,12 @@ const UnderwriterGrid = (props) => {
        })
       } 
 
+      const closeSummary = ()=>{
+        closeModal()
+        setShowSummary(false)
+        setSummaryData(null)    
+}
+
   const handleModalOpen = (event, data, isViewOnly) =>{
     setModalData({
       isOpen:true,
@@ -40,10 +48,17 @@ const UnderwriterGrid = (props) => {
     })
   }
 
-  const handleSummary = (event) => {
-    event.preventDefault(); 
+  const handleSummary = (event,data) => {
+    event.preventDefault(data); 
+    setSummaryData(data)
     openModal();
     }
+
+  useEffect(()=>{
+   if(summaryData && isOpen)
+    setShowSummary(true);
+
+  },summaryData)
   const handleRefreshData = ()=>{
      fetchData();
   }
@@ -93,7 +108,7 @@ const UnderwriterGrid = (props) => {
               <td>{data.make}</td>
               <td>{data.model}</td>
               <td>{data.year}</td>
-                <td><Link onClick={handleSummary}>*AI Decision Summary</Link></td>
+                <td><Link onClick={((e)=>handleSummary(e,data))}>*AI Decision Summary</Link></td>
                 <td className="divAction"><div><button id="btnApprove" className="buttonApprove" onClick={(e)=>{handleActions(e, data)}}>Approve</button>
                 <button id="btnReject" className="buttonReject" onClick={(e)=>{handleActions(e, data)}}>Reject</button></div></td>
             </tr>
@@ -101,7 +116,7 @@ const UnderwriterGrid = (props) => {
         </tbody>
       </table>: <div className="divNoData"><h4 className="noData">No Pending Reviews</h4></div>}
       <AgentNewFormModal modalData={modalData} setModalData={setModalData} fetchData ={fetchData}/>
-      <AIDecisionSummaryModal isOpen={isOpen} closeModal={closeModal} />
+      <AIDecisionSummaryModal showSummary={showSummary} closeSummary={closeSummary} summaryData={summaryData}/>
      
     </div>
   );

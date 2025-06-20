@@ -82,3 +82,19 @@ export const UpdateAgentData = async (updatedData) => {
   }
 }
 
+export const GetUWDecisions = async (inputFactor) => {
+
+  const url = 'http://127.0.0.1:8000/predict-risk';
+  try {
+    const response = await axios.post(url, inputFactor, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; // Return the response data
+  } catch (error) {
+    console.error('Error getting underwriting decisions:', error);
+    throw error; // Rethrow the error for further handling
+  }
+}
+

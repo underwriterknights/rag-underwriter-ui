@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../styles/AgentModal.css"; // Optional CSS styling
 import {SaveAgentDataApi} from "../service/api"
+import AWS from "aws-sdk";
+import { Link } from "react-router-dom";
+import {v4 as uuidv4} from 'uuid'
+import { accessKeyId, secretAccessKey,region,bucketName } from "../constants";
 const AgentNewFormModal = (props) => {
   let initialFormData = {
+    id:"",
      fullName: "",
     dateOfBirth: "",
     licenseNumber: "",
@@ -13,32 +18,37 @@ const AgentNewFormModal = (props) => {
     model: "",
     year: "",
     vin: "",
-    usage: "personal",
+    usage: "",
     mileage: "",
-    ownership: "owned",
+    ownership: "",
      street: "",
     city: "",
     state: "",
     zip: "",
     county: "",
-    residenceType: "own",
-    garageParking: "yes",
+    residenceType: "",
+    garageParking: "",
 
     liabilityBodilyInjury: "",
     liabilityPropertyDamage: "",
     collisionCoverage: "",
-    collisionDeductible: "500",
+    collisionDeductible: "",
     comprehensiveCoverage: "",
-    comprehensiveDeductible: "$500",
+    comprehensiveDeductible: "",
     roadsideAssistance: false,
     rentalReimbursement: false,
-    status:"Submitted"
+    status:"Submitted",
+    driverFileName: "",
+    locationFileName: "",
+    vehicleFileName: "",
+    coverageFileName: ""
   }
 
   const[driverUpload, setDriverUpload] = useState(false);
   const[vehicleUpload, setVehicleUpload] = useState(false);
   const[locationUpload, setLocationUpload] = useState(false);
   const[coverageUpload, setCoverageUpload] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
    const [formData, setFormData] = useState(props.modalData && 
     props.modalData.data?props.modalData.data:initialFormData);
@@ -51,6 +61,7 @@ const AgentNewFormModal = (props) => {
   },[props.modalData?.data])
 
   const handleChange = (e) => {
+    setSubmitted(false);
     let value =e.target.value;
     if(e.target.name=="roadsideAssistance" || e.target.name=="rentalReimbursement")
       value = e.target.checked
@@ -61,41 +72,125 @@ const AgentNewFormModal = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitted Data:", formData);
-    SaveAgentDataApi(formData).then((reponse)=>{
+      let uniqueId = uuidv4();
+      formData.id = uniqueId;
+    if(uploadedFiles.length > 0){    
+      uploadedFiles.forEach(async(file,index) => {
+         file.fileName = uniqueId +"_" + file.fileName;
+         await  uploadFileToS3(file).then((s3FileName)=>{
+            formData[file.payloadName] = s3FileName;
+            if(index==uploadedFiles.length-1)
+              saveFormData(formData);
+         })
+                
+      });         
+      
+    }else{
+      saveFormData(formData);
+    }
+    
+   
+  };
+
+  const saveFormData = (saveInput) =>{
+    SaveAgentDataApi(saveInput).then((reponse)=>{
       setSubmitted(true);
       document.getElementById("agentForm").reset(); // Reset the form after submission
-      setFormData(initialFormData); // Reset the form data state
+      setUploadedFiles([])
+     setFormData(initialFormData); // Reset the form data state when closing the modal
+     setDriverUpload(false); 
+     setVehicleUpload(false);
+     setLocationUpload(false);
+     setCoverageUpload(false);
       props.fetchData();  
     }).catch((error)=>{
       alert('Error occured during save data' + error)
     })
-   
-  };
+  }
+
+   const uploadFileToS3 = async (file) => {
+   return new Promise(async(resolve,reject)=>{
+     
+  
+      // S3 Credentials
+      AWS.config.update({
+            accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey,
+      });
+      const s3 = new AWS.S3({
+        params: { Bucket: bucketName },
+        region: region,
+      });
+  
+      // Files Parameters
+  
+      const paramsObject = {
+        Bucket: S3_BUCKET,
+        Key: file.fileName,
+        Body: file.file,
+      };
+  
+      
+  
+      // Uploading file to s3
+  
+      var uploadFile = s3
+        .putObject(paramsObject)
+        .on("httpUploadProgress", (evt) => {
+          // File uploading progress
+          console.log(
+            "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
+          );
+        })
+        .promise();
+  
+      await uploadFile.then((err, data) => {
+        if(err.err)
+          reject("error occured" + err.err)
+        resolve(file.fileName)
+      });
+    });
+    };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0]; 
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
+    
         if (e.target.name === "driverUpload") {
           setDriverUpload(true);
-          setFormData({ ...formData, driverFile: reader.result });
+          captureFile("driverInfo.pdf","driverFileName",file)
         } else if (e.target.name === "vehicleUpload") {
           setVehicleUpload(true);
-          setFormData({ ...formData, vehicleFile: reader.result });
+           captureFile("vehicleInfo.pdf","vehicleFileName",file)
         }
-        else if (e.target.name === "locationUpload") {
-
+        else if (e.target.name === "locationUpload") {          
           setLocationUpload(true);
-          setFormData({ ...formData, locationFile: reader.result });
+           captureFile("locationInfo.pdf","locationFileName",file)          
         }
         else if (e.target.name === "coverageUpload") {
           setCoverageUpload(true);
-          setFormData({ ...formData, coverageFile: reader.result });
+          captureFile("coverageInfo.pdf","coverageFileName",file)    
         }
-      }
-      reader.readAsDataURL(file); // Convert the file to base64 string
+      
+ // Convert the file to base64 string
     }
+  }
+
+  const captureFile = (fileName, payloadName, file) =>{
+     const previousFile = uploadedFiles.find((item) =>
+      item.fileName === fileName
+    );
+    if(previousFile){
+      previousFile.file = file;
+      setUploadedFiles(previousFile)
+    }else{
+      setUploadedFiles([...uploadedFiles,{
+            fileName:fileName,
+              payloadName:payloadName,
+            file:file
+          }])
+    }
+    
   }
 
   const handleClose = (event) => {       
@@ -103,6 +198,7 @@ const AgentNewFormModal = (props) => {
     isOpen:false,
     data:null
     })
+    setUploadedFiles([])
     setFormData(initialFormData); // Reset the form data state when closing the modal
     setDriverUpload(false); 
     setVehicleUpload(false);
@@ -110,6 +206,44 @@ const AgentNewFormModal = (props) => {
     setCoverageUpload(false);
     setSubmitted(false); // Reset the submitted state when closing the modal
   };
+
+        
+AWS.config.update({
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey,
+      region: region,
+    });
+
+    const s3 = new AWS.S3();
+
+  const downloadS3Document=async (event,fileName)=>{
+
+      const params = {
+        Bucket: bucketName,
+        Key: fileName, // The full path to the file in your S3 bucket
+      };
+
+      try {
+        const data = await s3.getObject(params).promise();
+        // data.Body will contain the file content
+        // You can then process it, e.g., convert to a Blob and create a download link
+        const blob = new Blob([data.Body], { type: data.ContentType });
+        const url = URL.createObjectURL(blob);
+
+        // Example: Create a temporary link and trigger download
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName; // Use the file name as download name
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+      } catch (err) {
+        console.error('Error retrieving file from S3:', err);
+      }
+    
+  }
 
   return (
     <div>   
@@ -155,10 +289,18 @@ const AgentNewFormModal = (props) => {
           </select>
   </div> 
                     </div>
-                    <div className="uploadDriver">
+                    {!props.modalData?.isViewOnly &&<div className="uploadDriver">
                         <label for="avatar">Upload Driver Licence Image/Document:</label>
                     <input type="file" id="driverUpload" name="driverUpload" onChange={handleFileUpload}  />
-                    </div>
+                    </div>}
+
+                      {
+      (props.modalData?.isViewOnly && formData.driverFileName) &&
+      <div className="uploadDriver">
+    <label htmlFor="avatar">Download Driver Document:</label>
+    <Link onClick={(e)=>downloadS3Document(e,formData.driverFileName)}>{formData.driverFileName}</Link> 
+    </div>
+    }
                   
                   </div>
                   <div className="vechicleForm">
@@ -210,10 +352,17 @@ const AgentNewFormModal = (props) => {
   </div>
                     </div>
 
-  <div className="uploadVechicle">
+  {!props.modalData?.isViewOnly &&<div className="uploadVechicle">
     <label htmlFor="vehicleImage">Upload Vehicle Details Document:</label>   
     <input type="file" id="vehicleUpload" name="vehicleUpload" onChange={handleFileUpload}   />
-        </div>
+        </div>}
+        {
+      (props.modalData?.isViewOnly && formData.vehicleFileName) &&
+      <div className="uploadVechicle">
+    <label htmlFor="vehicleImage">Download Vehicle Document:</label>
+    <Link onClick={(e)=>downloadS3Document(e,formData.vehicleFileName)}>{formData.vehicleFileName}</Link> 
+    </div>
+    }
                   </div>
     
    <div className="locationForm">
@@ -263,10 +412,18 @@ const AgentNewFormModal = (props) => {
       </select>
     </div>
     </div>
-    <div className="uploadLocation">
+    {!props.modalData?.isViewOnly && <div className="uploadLocation">
       <label htmlFor="locationImage">Upload Location Document(Address Proof):</label> 
       <input type="file" id="locationUpload" name="locationUpload" onChange={handleFileUpload}   />
-      </div>
+      </div>}
+
+      {
+      (props.modalData?.isViewOnly && formData.locationFileName) &&
+      <div className="uploadLocation">
+    <label htmlFor="locationImage">Download Location Document:</label>
+    <Link onClick={(e)=>downloadS3Document(e,formData.locationFileName)}>{formData.locationFileName}</Link> 
+    </div>
+    }
     </div>
 
 
@@ -390,10 +547,19 @@ const AgentNewFormModal = (props) => {
       <label htmlFor="rentalReimbursement">Add Rental Reimbursement</label>
     </div>
   </div>
-  <div className="uploadCoverage">
+  {!props.modalData?.isViewOnly && <div className="uploadCoverage">
     <label htmlFor="coverageImage">Upload Coverage Document:</label>
     <input type="file" id="coverageUpload" name="coverageUpload" onChange={handleFileUpload}  />
+    </div>}
+
+    {
+      (props.modalData?.isViewOnly && formData.coverageFileName) &&
+      <div className="uploadCoverage">
+    <label htmlFor="coverageImage">Download Coverage Document:</label>
+    <Link onClick={(e)=>downloadS3Document(e,formData.coverageFileName)}>{formData.coverageFileName}</Link> 
     </div>
+    }
+
   </div>    
      <div className="submitButtonContainer"> 
           <button type="submit" name="submitButton" id="submitButton" hidden={props.modalData?.isViewOnly} className="buttons">Submit For Review</button>

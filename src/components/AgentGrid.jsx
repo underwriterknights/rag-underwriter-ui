@@ -7,7 +7,6 @@ import {GetAgentData} from "../service/api"
 const AgentGrid = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [agentData, setAgentData] = useState([]);
-  const [viewData, setViewData] = useState(null)
   const [modalData, setModalData] = useState(
     {
       isOpen:false,
@@ -40,7 +39,6 @@ const AgentGrid = () => {
       isViewOnly: isViewOnly
     })
   }
-
   return (
     <div style={{ padding: 0,  top:60, left:10, right:0,  marginBottom:"50px", position:"absolute", width:"95%", height:"100%" }}>
       <div className="agentGridContainer">
