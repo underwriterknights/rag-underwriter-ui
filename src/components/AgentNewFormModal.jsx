@@ -40,8 +40,10 @@ const AgentNewFormModal = (props) => {
     status:"Submitted",
     driverFileName: "",
     locationFileName: "",
-    vehicleFileName: "",
-    coverageFileName: ""
+    vehicleFileName: "",  
+    coverageFileName: "",
+    agentName: JSON.parse(localStorage.getItem('loggedUser')).full_name,
+    agentUserName: JSON.parse(localStorage.getItem('loggedUser')).username
   }
 
   const[driverUpload, setDriverUpload] = useState(false);
@@ -125,7 +127,7 @@ const AgentNewFormModal = (props) => {
       // Files Parameters
   
       const paramsObject = {
-        Bucket: S3_BUCKET,
+        Bucket: bucketName,
         Key: file.fileName,
         Body: file.file,
       };

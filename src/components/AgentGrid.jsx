@@ -7,6 +7,7 @@ import {GetAgentData} from "../service/api"
 const AgentGrid = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [agentData, setAgentData] = useState([]);
+  let agentUserName = JSON.parse(localStorage.getItem("loggedUser")).username;
   const [modalData, setModalData] = useState(
     {
       isOpen:false,
@@ -22,7 +23,8 @@ const AgentGrid = () => {
     GetAgentData().then((response)=>{
     if(response && response.length > 0)
     {
-      setAgentData(response);
+      let currentAgentData = response.filter(res=>res.agentUserName===agentUserName)
+      setAgentData(currentAgentData);
     }else{
       alert(response.message)
     }
@@ -47,7 +49,7 @@ const AgentGrid = () => {
           <button className="btnRefresh" onClick={handleRefreshData}>Refresh Data</button>
         </div>       
       </div>         
-      <table border="1" cellPadding="10" cellSpacing="0" className="agentGridTable">    
+     {agentData.length>0 ? <table border="1" cellPadding="10" cellSpacing="0" className="agentGridTable">    
         <thead>
           <tr>
             <th>Driver Name</th>
@@ -72,7 +74,7 @@ const AgentGrid = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>:<div className="divNoData"><h4 className="noData">No Data Found</h4></div>}
       <AgentNewFormModal modalData={modalData} setModalData={setModalData} fetchData ={fetchData}/>
     </div>
   );
