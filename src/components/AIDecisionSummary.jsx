@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../styles/AIDecisionSummary.CSS"; // Optional CSS styling
+import "../styles/AIDecisionSummary.css"; // Optional CSS styling
 import { GetUWDecisions } from "../service/api";
 import Loader from "./Loader";
 
