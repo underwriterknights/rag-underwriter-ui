@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation,Link, Navigate } from 'react-router-dom'
 import "../styles/App.css"
+import Logo from "../assets/Logo.png"
 const Header= () => {
 
   const getUserName =()=>{
@@ -19,7 +20,7 @@ const Header= () => {
   return (
     <div className='divTitle'>
         <div>
-        <img src="/src//assets//Logo.png" className='logo'></img>
+        <img src={Logo} className='logo'></img>
         <h3 className='titleName'>Underwriter Knights</h3>
         </div> 
         <div className="divUserName">
