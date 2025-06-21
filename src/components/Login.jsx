@@ -49,7 +49,7 @@ const Login = (props) => {
             <input className="inputField" type="password" id="password" name="password" required />
             <br/>
             <button type="submit" className="buttonLogin" >Login</button>
-            <button className="buttonRegister" onClick={() => navigate("/register")} >Go to Register</button>
+            <button type="button" className="buttonRegister" onClick={() => navigate("/register")} >Go to Register</button>
 
             </form>
         </div>
