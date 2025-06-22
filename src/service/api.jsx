@@ -4,7 +4,7 @@ import axios from 'axios';
 
  export const RegisterUserApi = async (newUserdetails) => {
 
-  const url = 'http://127.0.0.1:8000/register';
+  const url = 'http://18.206.157.226:8000/register';
   try {
     const response = await axios.post(url, newUserdetails, {
       headers: {
@@ -20,7 +20,7 @@ import axios from 'axios';
 
 export const UserLoginApi = async (userdetail) => {
 
-  const url = 'http://127.0.0.1:8000/login';
+  const url = 'http://18.206.157.226:8000/login';
   try {
     const response = await axios.post(url, userdetail, {
       headers: {
@@ -36,7 +36,7 @@ export const UserLoginApi = async (userdetail) => {
 
  export const SaveAgentDataApi = async (agentInputData) => {
 
-  const url = 'http://127.0.0.1:8000/saveData';
+  const url = 'http://18.206.157.226:8000/saveData';
   try {
     const response = await axios.post(url, agentInputData, {
       headers: {
@@ -52,7 +52,7 @@ export const UserLoginApi = async (userdetail) => {
 
 export const GetAgentData = async () => {
 
-  const url = 'http://127.0.0.1:8000/getData';
+  const url = 'http://18.206.157.226:8000/getData';
   try {
     const response = await axios.get(url, {
       headers: {
@@ -68,7 +68,7 @@ export const GetAgentData = async () => {
 
 export const UpdateAgentData = async (updatedData) => {
 
-  const url = 'http://127.0.0.1:8000/updateStatus';
+  const url = 'http://18.206.157.226:8000/updateStatus';
   try {
     const response = await axios.put(url,updatedData, {
       headers: {
@@ -84,7 +84,7 @@ export const UpdateAgentData = async (updatedData) => {
 
 export const GetUWDecisions = async (inputFactor) => {
 
-  const url = 'http://127.0.0.1:8000/predict-risk';
+  const url = 'http://18.206.157.226:8000/predict-risk';
   try {
     const response = await axios.post(url, inputFactor, {
       headers: {
